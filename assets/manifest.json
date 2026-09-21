@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "description": "Temporary Cat Clicker artwork. Paths are relative to assets/. Pixel sizes are replacement contracts.",
+  "reference_resolution": [
+    1200,
+    800
+  ],
+  "layout": {
+    "hud_rect": [
+      0,
+      0,
+      1200,
+      80
+    ],
+    "cat_rect": [
+      120,
+      100,
+      960,
+      560
+    ],
+    "shop_rect": [
+      0,
+      660,
+      1200,
+      140
+    ],
+    "shop_icon_size": [
+      80,
+      80
+    ],
+    "cutscene_overlay_rect": [
+      0,
+      710,
+      1200,
+      90
+    ]
+  },
+  "images": {
+    "background": {
+      "path": "images/backgrounds/room.png",
+      "size": [
+        1200,
+        800
+      ],
+      "transparent": false
+    },
+    "cat": {
+      "path": "images/cats/cat.png",
+      "size": [
+        960,
+        560
+      ],
+      "transparent": true
+    },
+    "golden_kitty": {
+      "path": "images/cats/golden_kitty.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent": true
+    },
+    "cat_petter": {
+      "path": "images/upgrades/cat_petter.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent": true
+    },
+    "litter_box": {
+      "path": "images/upgrades/litter_box.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent": true
+    },
+    "yarn_ball": {
+      "path": "images/upgrades/yarn_ball.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent": true
+    },
+    "cat_house": {
+      "path": "images/upgrades/cat_house.png",
+      "size": [
+        256,
+        256
+      ],
+      "transparent": true
+    },
+    "mouse_cursor": {
+      "path": "images/ui/mouse_cursor.png",
+      "size": [
+        48,
+        48
+      ],
+      "transparent": true,
+      "hotspot": [
+        12,
+        12
+      ]
+    }
+  },
+  "cutscenes": {
+    "opening": {
+      "size": [
+        1200,
+        800
+      ],
+      "transparent": false,
+      "frames": [
+        "cutscenes/opening/open_cutscene_1.png",
+        "cutscenes/opening/open_cutscene_2.png",
+        "cutscenes/opening/open_cutscene_3.png"
+      ]
+    },
+    "win": {
+      "size": [
+        1200,
+        800
+      ],
+      "transparent": false,
+      "frames": [
+        "cutscenes/win/win_cutscene_1.png",
+        "cutscenes/win/win_cutscene_2.png",
+        "cutscenes/win/win_cutscene_3.png"
+      ]
+    },
+    "lose": {
+      "size": [
+        1200,
+        800
+      ],
+      "transparent": false,
+      "frames": [
+        "cutscenes/lose/lose_cutscene_1.png",
+        "cutscenes/lose/lose_cutscene_2.png",
+        "cutscenes/lose/lose_cutscene_3.png"
+      ]
+    }
+  }
+}
