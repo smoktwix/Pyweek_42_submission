@@ -11,7 +11,6 @@ from .resources import Resources
 
 class Game:
     def __init__(self):
-        # No mixer is needed until music and sounds are added.
         pygame.display.init()
         pygame.font.init()
         flags = pygame.RESIZABLE if config.RESIZABLE else 0

@@ -40,6 +40,7 @@ UPGRADES = {
 # Display and assets.
 ASSET_DIR = Path(__file__).resolve().parent.parent / "assets"
 ASSET_MANIFEST = ASSET_DIR / "manifest.json"
+CAT_PETTER_VARIANT_GLOB = "images/upgrades/cat_petter_*.png"
 CANVAS_SIZE = (1200, 800)
 WINDOW_SIZE = (1200, 800)
 FPS = 60
@@ -48,6 +49,13 @@ CURSOR_HOTSPOT = (12, 12)
 CURSOR_SIZE = (48, 48)
 CAT_RECT = (120, 100, 960, 560)
 CAT_HIT_ALPHA = 128
+
+# Sound effects. Volume ranges from 0.0 (silent) to 1.0 (full volume).
+SFX_ENABLED = True
+SFX_VOLUME = 0.5
+SFX_CHANNELS = 4  # Maximum overlapping meows; rapid clicks replace the oldest.
+SFX_BUFFER_SIZE = 512
+CAT_MEOW_PATH = ASSET_DIR / "audio/sfx/729031__redjamie7__cat-smokey-meow-1.mp3"
 
 # Controls use pygame.key.name spellings; change these to rebind keys.
 PAUSE_KEYS = ("p", "escape")
@@ -108,19 +116,39 @@ SHOP_ACTION_Y = 95
 TOOLTIP_RECT = (18, 624, 1164, 32)
 TOOLTIP_TEXT_OFFSET = (12, 6)
 
-# Show one drawing for each purchased type, with a quantity badge.
-PROP_RECTS = {
-    "cat_petter": (190, 168, 144, 144),
-    "litter_box": (20, 452, 180, 180),
-    "yarn_ball": (886, 456, 140, 140),
-    "cat_house": (1000, 328, 190, 190),
+# Purchased pictures scale proportionally from their original PNG dimensions.
+PROP_SCALES = {
+    "cat_petter": 0.85,
+    "litter_box": 0.85,
+    "yarn_ball": 0.70,
+    "cat_house": 0.85,
 }
-PROP_BADGE_SIZE = (64, 24)
-PROP_BADGE_OFFSET_Y = 4
+# Areas are (x, y, width, height) and contain the visible artwork, not its padding.
+# Random positions are kept for the round; crowded areas can contain overlapping copies.
+PROP_AREAS = {
+    "cat_petter": (140, 90, 920, 420),  # Across the cat, in the top and middle.
+    "litter_box": (24, 400, 456, 220),  # Bottom left, leaving room for the house.
+    "yarn_ball": (720, 380, 456, 240),  # Bottom right, leaving room for the house.
+    "cat_house": (480, 360, 240, 260),  # Centered in this area, resting on the floor.
+}
+GROUNDED_PROPS = ("litter_box", "yarn_ball", "cat_house")
+PROP_GROUND_Y_RANGE = (584, 616)  # Visible bases sit on the floor above the help strip.
+PROP_PLACEMENT_ATTEMPTS = 48     # Choose the least crowded of these random positions.
+PETTER_OFF_CAT_PENALTY = 0.35    # Prefer positions touching the cat's visible silhouette.
 PETTER_BOB_PIXELS = 5
 PETTER_BOB_HZ = 1.5
+PETTER_PHASE_STEP = 0.45  # Radians between hands so they pat at different times.
 CLICK_POPUP_SECONDS = 0.65
 CLICK_POPUP_RISE = 52
+CLICK_POPUP_COLORS = (
+    (255, 100, 110),  # Red
+    (255, 169, 85),   # Orange
+    (255, 225, 100),  # Yellow
+    (125, 230, 135),  # Green
+    (90, 215, 240),   # Cyan
+    (125, 155, 255),  # Blue
+    (205, 130, 255),  # Violet, then smoothly back to red.
+)
 MAX_CLICK_POPUPS = 32
 
 # Pause menu.

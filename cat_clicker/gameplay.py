@@ -1,6 +1,7 @@
 """The cat, shop, HUD, and pause menu for a single round."""
 
 import math
+import random
 
 import pygame
 
@@ -31,12 +32,28 @@ class GameplayScreen:
         }
         self.animation_time = 0.0
         self.popups = []
+        self.next_popup_color = 0
+        self.prop_random = random.Random()
+        self.props = {name: [] for name in config.PROP_AREAS}
+        self.prop_variants = {name: (name,) for name in config.PROP_AREAS}
+        self.prop_variants["cat_petter"] = resources.cat_petter_variants
+        self.prop_variant_bags = {name: [] for name in config.PROP_AREAS}
+        self.prop_images = {}
+        self.prop_bounds = {}
+        for name, variants in self.prop_variants.items():
+            for image_name in variants:
+                original = resources.image(image_name)
+                size = tuple(round(dimension * config.PROP_SCALES[name])
+                             for dimension in original.get_size())
+                image = resources.image(image_name, size)
+                self.prop_images[image_name] = image
+                self.prop_bounds[image_name] = image.get_bounding_rect(min_alpha=config.CAT_HIT_ALPHA)
 
     def update(self, seconds):
         if self.state.paused:
             return
         self.animation_time += seconds
-        self.popups = [(pos, age + seconds) for pos, age in self.popups
+        self.popups = [(pos, age + seconds, color) for pos, age, color in self.popups
                        if age + seconds < config.CLICK_POPUP_SECONDS]
 
     def cat_contains(self, pos):
@@ -68,7 +85,9 @@ class GameplayScreen:
                 self.state.buy(name)
                 return None
         if self.cat_contains(pos) and self.state.click():
-            self.popups.append((pos, 0.0))
+            self.resources.play_cat_meow()
+            self.popups.append((pos, 0.0, self.next_popup_color))
+            self.next_popup_color = (self.next_popup_color + 1) % len(config.CLICK_POPUP_COLORS)
             self.popups = self.popups[-config.MAX_CLICK_POPUPS:]
         return None
 
@@ -76,31 +95,79 @@ class GameplayScreen:
         surface.blit(self.resources.image("background", config.CANVAS_SIZE), (0, 0))
         surface.blit(self.cat_image, self.cat_rect)
         self._draw_props(surface)
-        for (x, y), age in self.popups:
-            rise = round(config.CLICK_POPUP_RISE * age / config.CLICK_POPUP_SECONDS)
+        for (x, y), age, color_index in self.popups:
+            progress = age / config.CLICK_POPUP_SECONDS
+            rise = round(config.CLICK_POPUP_RISE * progress)
+            palette = config.CLICK_POPUP_COLORS
+            start, end = palette[color_index], palette[(color_index + 1) % len(palette)]
+            color = tuple(round(a + (b - a) * progress) for a, b in zip(start, end))
             text(surface, self.resources, f"+{config.POINTS_PER_CLICK}", (x, y - rise),
-                 "stat", "gold", "center")
+                 "stat", color, "center")
         self._draw_hud(surface, pos)
         self._draw_shop(surface, pos)
         if self.state.paused:
             self._draw_pause(surface, pos)
 
     def _draw_props(self, surface):
-        for name, placement in config.PROP_RECTS.items():
-            count = self.state.owned[name]
-            if not count:
-                continue
-            rect = pygame.Rect(placement)
-            if name == "cat_petter":
-                rect.y += round(math.sin(self.animation_time * math.tau * config.PETTER_BOB_HZ)
-                                * config.PETTER_BOB_PIXELS)
-            image = self.resources.image(name, rect.size)
+        drawings = []
+        for name in config.PROP_AREAS:
+            props = self.props[name]
+            del props[self.state.owned[name]:]
+            while len(props) < self.state.owned[name]:
+                # Use every variant once per shuffled cycle; redraws keep each choice.
+                bag = self.prop_variant_bags[name]
+                if not bag:
+                    bag.extend(self.prop_variants[name])
+                    self.prop_random.shuffle(bag)
+                image_name = bag.pop()
+                position = self._place_prop(name, self.prop_bounds[image_name])
+                props.append((image_name, position))
+            for index, (image_name, position) in enumerate(props):
+                image = self.prop_images[image_name]
+                visible = self.prop_bounds[image_name]
+                rect = image.get_rect(topleft=position)
+                if name == "cat_petter":
+                    phase = (self.animation_time * math.tau * config.PETTER_BOB_HZ
+                             + index * config.PETTER_PHASE_STEP)
+                    rect.y += round(math.sin(phase) * config.PETTER_BOB_PIXELS)
+                drawings.append((rect.y + visible.bottom, image, rect))
+        # Draw farther objects first so overlapping ground objects form a natural pile.
+        drawings.sort(key=lambda drawing: drawing[0])
+        for _, image, rect in drawings:
             surface.blit(image, rect)
-            visible = image.get_bounding_rect(min_alpha=config.CAT_HIT_ALPHA).move(rect.topleft)
-            badge = pygame.Rect((0, 0), config.PROP_BADGE_SIZE)
-            badge.midtop = (visible.centerx, visible.bottom + config.PROP_BADGE_OFFSET_Y)
-            pygame.draw.rect(surface, config.COLORS["paper"], badge, border_radius=config.CORNER_RADIUS)
-            text(surface, self.resources, f"x{count}", badge.center, "small", anchor="center")
+
+    def _place_prop(self, name, visible):
+        """Place scaled artwork without moving previously bought copies."""
+        area = pygame.Rect(config.PROP_AREAS[name])
+        if name == "cat_petter":
+            area.inflate_ip(0, -config.PETTER_BOB_PIXELS * 2)
+        min_y, max_y = area.top, area.bottom - visible.height
+        if name in config.GROUNDED_PROPS:
+            min_y = max(min_y, config.PROP_GROUND_Y_RANGE[0] - visible.height)
+            max_y = min(max_y, config.PROP_GROUND_Y_RANGE[1] - visible.height)
+        max_x = area.right - visible.width
+        if max_x < area.left or max_y < min_y:
+            raise ValueError(f"PROP_AREAS[{name!r}] must fit the scaled asset's visible size")
+
+        if name == "cat_house":
+            return (area.centerx - visible.width // 2 - visible.x,
+                    (min_y + max_y) // 2 - visible.y)
+
+        occupied = [self.prop_bounds[image_name].move(position)
+                    for props in self.props.values() for image_name, position in props]
+        best, best_score = None, float("inf")
+        for _ in range(config.PROP_PLACEMENT_ATTEMPTS):
+            candidate = pygame.Rect(self.prop_random.randint(area.left, max_x),
+                                    self.prop_random.randint(min_y, max_y), *visible.size)
+            score = 0
+            for other in occupied:
+                overlap = candidate.clip(other)
+                score = max(score, overlap.width * overlap.height)
+            if name == "cat_petter" and not self.cat_contains(candidate.center):
+                score += visible.width * visible.height * config.PETTER_OFF_CAT_PENALTY
+            if score < best_score:
+                best, best_score = candidate, score
+        return (best.x - visible.x, best.y - visible.y)
 
     def _draw_hud(self, surface, pos):
         pygame.draw.rect(surface, config.COLORS["paper"], config.HUD_RECT)

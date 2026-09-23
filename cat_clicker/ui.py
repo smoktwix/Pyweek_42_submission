@@ -17,7 +17,8 @@ def time_text(seconds):
 
 
 def text(surface, resources, value, pos, style="body", color="ink", anchor="topleft", max_width=None):
-    image = resources.fonts[style].render(str(value), True, config.COLORS[color])
+    color = config.COLORS[color] if isinstance(color, str) else color
+    image = resources.fonts[style].render(str(value), True, color)
     if max_width and image.get_width() > max_width:
         height = max(1, round(image.get_height() * max_width / image.get_width()))
         image = pygame.transform.smoothscale(image, (max_width, height))

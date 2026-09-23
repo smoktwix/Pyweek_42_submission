@@ -1,6 +1,7 @@
-"""Load artwork once, using paths relative to the project rather than cwd."""
+"""Load artwork and sound once, using paths relative to the project."""
 
 import json
+import logging
 
 import pygame
 
@@ -14,6 +15,12 @@ class Resources:
         self.scaled = {}
         for name, spec in manifest["images"].items():
             self.images[name] = self._load(spec["path"], spec["size"], spec["transparent"])
+        self.cat_petter_variants = ["cat_petter"]
+        petter_spec = manifest["images"]["cat_petter"]
+        for path in sorted(config.ASSET_DIR.glob(config.CAT_PETTER_VARIANT_GLOB)):
+            self.images[path.stem] = self._load(path.relative_to(config.ASSET_DIR),
+                                               petter_spec["size"], petter_spec["transparent"])
+            self.cat_petter_variants.append(path.stem)
         self.cutscenes = {
             name: [self._load(path, spec["size"], False) for path in spec["frames"]]
             for name, spec in manifest["cutscenes"].items()
@@ -22,6 +29,25 @@ class Resources:
             if not frames:
                 raise ValueError(f"Cutscene {name!r} needs at least one image")
         self.fonts = {name: pygame.font.Font(None, size) for name, size in config.FONT_SIZES.items()}
+        self.cat_meow = self._load_cat_meow()
+
+    @staticmethod
+    def _load_cat_meow():
+        if not config.SFX_ENABLED:
+            return None
+        try:
+            pygame.mixer.init(buffer=config.SFX_BUFFER_SIZE)
+            pygame.mixer.set_num_channels(config.SFX_CHANNELS)
+            sound = pygame.mixer.Sound(str(config.CAT_MEOW_PATH))
+            sound.set_volume(config.SFX_VOLUME)
+            return sound
+        except (OSError, pygame.error) as error:
+            logging.getLogger(__name__).warning("Sound unavailable; continuing silently: %s", error)
+            return None
+
+    def play_cat_meow(self):
+        if self.cat_meow is not None:
+            pygame.mixer.find_channel(force=True).play(self.cat_meow)
 
     @staticmethod
     def _load(relative_path, expected_size, transparent):

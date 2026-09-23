@@ -5,6 +5,7 @@ import unittest
 from unittest.mock import patch
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
 
 import pygame
@@ -81,6 +82,50 @@ class GameTests(unittest.TestCase):
         self.assertEqual((self.game.state.points, self.game.state.owned["cat_petter"]), (0, 1))
         self.game.step(12, [key(pygame.K_1)])
         self.assertEqual((self.game.state.points, self.game.state.owned["cat_petter"]), (0, 2))
+
+    def test_meow_plays_only_for_manual_cat_clicks(self):
+        sound = self.game.resources.cat_meow
+        self.assertIsNotNone(sound)
+        self.assertGreater(sound.get_length(), 0)
+        self.assertAlmostEqual(sound.get_volume(), config.SFX_VOLUME, delta=1 / 128)
+        self.start()
+        self.assertEqual(sound.get_num_channels(), 0)
+        self.game.step(0, [click((400, 380))])
+        self.assertEqual(sound.get_num_channels(), 1)
+        self.game.step(0, [click((400, 380)) for _ in range(config.SFX_CHANNELS * 2)])
+        self.assertEqual(sound.get_num_channels(), config.SFX_CHANNELS)
+        sound.stop()
+        self.game.state.points = 100
+        self.game.step(0, [click((130, 110)), click((20, 200)), click((400, 380), button=3),
+                           click(self.game.screen.cards["cat_petter"].center)])
+        self.game.step(1, [])  # Automatic income does not meow.
+        self.assertEqual(sound.get_num_channels(), 0)
+        self.game.step(0, [key(pygame.K_p)])
+        self.game.step(0, [click((400, 380))])
+        self.assertEqual(sound.get_num_channels(), 0)
+        self.game.step(0, [key(pygame.K_p)])
+        self.game.step(config.GAME_DURATION, [click((400, 380))])
+        self.assertEqual(sound.get_num_channels(), 0)
+
+    def test_missing_audio_device_does_not_prevent_play(self):
+        self.game.close()
+        with patch("pygame.mixer.init", side_effect=pygame.error("No audio device")):
+            with self.assertLogs("cat_clicker.resources", level="WARNING"):
+                self.game = Game()
+        self.assertIsNone(self.game.resources.cat_meow)
+        self.start()
+        self.game.step(0, [click((400, 380))])
+        self.assertEqual(self.game.state.points, 1)
+
+    def test_sound_can_be_disabled(self):
+        self.game.close()
+        with patch.object(config, "SFX_ENABLED", False):
+            self.game = Game()
+        self.assertIsNone(pygame.mixer.get_init())
+        self.assertIsNone(self.game.resources.cat_meow)
+        self.start()
+        self.game.step(0, [click((400, 380))])
+        self.assertEqual(self.game.state.points, 1)
 
     def test_pause_blocks_shop_and_cat_input_then_resumes(self):
         self.start()
@@ -174,7 +219,8 @@ class GameTests(unittest.TestCase):
                     self.assertEqual(self.game.state.points, before + 1)
 
     def test_all_art_and_cutscene_frames_render(self):
-        self.assertEqual(len(self.game.resources.images), 8)
+        self.assertEqual(len(self.game.resources.images),
+                         7 + len(self.game.resources.cat_petter_variants))
         self.assertEqual(sum(map(len, self.game.resources.cutscenes.values())), 9)
         for sequence, frames in self.game.resources.cutscenes.items():
             screen = CutsceneScreen(self.game.resources, sequence)
@@ -183,13 +229,13 @@ class GameTests(unittest.TestCase):
                     screen.index = index
                     screen.draw(self.game.canvas, None)
                     self.assertEqual(self.game.canvas.get_size(), (1200, 800))
-        for name in config.PROP_RECTS:
+        for name in config.PROP_AREAS:
             self.assertTrue(self.game.resources.image(name).get_flags() & pygame.SRCALPHA)
 
     def test_gameplay_all_upgrades_and_pause_render(self):
         self.start()
         self.game.state.points = 10000
-        for name in config.PROP_RECTS:
+        for name in config.PROP_AREAS:
             while not self.game.state.at_limit(name):
                 self.assertTrue(self.game.state.buy(name))
         self.game.step(0.1, [click((400, 380))])

@@ -14,6 +14,7 @@ All paths below are relative to this directory.
 | Clickable cat | `images/cats/cat.png` | 960 × 560 | Transparent |
 | Golden Kitty | `images/cats/golden_kitty.png` | 256 × 256 | Transparent |
 | Cat Petter | `images/upgrades/cat_petter.png` | 256 × 256 | Transparent |
+| Cat Petter variants | `images/upgrades/cat_petter_2.png` through `cat_petter_9.png` | 256 × 256 each | Transparent |
 | Litter Box | `images/upgrades/litter_box.png` | 256 × 256 | Transparent |
 | Yarn Ball | `images/upgrades/yarn_ball.png` | 256 × 256 | Transparent |
 | Cat House | `images/upgrades/cat_house.png` | 256 × 256 | Transparent |
@@ -22,7 +23,12 @@ All paths below are relative to this directory.
 | Win frames 1–3 | `cutscenes/win/win_cutscene_1.png` through `win_cutscene_3.png` | 1200 × 800 each | Opaque |
 | Lose frames 1–3 | `cutscenes/lose/lose_cutscene_1.png` through `lose_cutscene_3.png` | 1200 × 800 each | Opaque |
 
-There are **17 PNGs**: eight gameplay images and nine cutscene frames.
+There are **25 PNGs**: eight base gameplay images, eight extra Cat Petter variants,
+and nine cutscene frames. Cat Petters use the base image and every variant once
+in a shuffled order before repeating with a new shuffled cycle. Each keeps its
+choice throughout the round. Add more
+`images/upgrades/cat_petter_*.png` files at 256 × 256 with transparency and restart
+the game to include them automatically.
 
 ## Placement and replacement guide
 
@@ -34,6 +40,13 @@ There are **17 PNGs**: eight gameplay images and nine cutscene frames.
 - Cutscenes fill the screen. Keep important action above the bottom 90 pixels so navigation and optional captions can be drawn over that area.
 - Prices, counts, timer, labels, buttons, and captions belong in game code; none are baked into these assets.
 - Load sprites with Pygame's `convert_alpha()` after creating the display. Load opaque backgrounds/cutscenes with `convert()`.
+
+## Sound effects
+
+`audio/sfx/729031__redjamie7__cat-smokey-meow-1.mp3` plays when the player clicks
+the cat. It is loaded once and reused for subsequent clicks. Change
+`CAT_MEOW_PATH`, `SFX_VOLUME`, or `SFX_ENABLED` in `cat_clicker/config.py` to replace,
+adjust, or mute it.
 
 ## Storyboard order
 
