@@ -26,15 +26,16 @@ class Upgrade:
     income: float = 0.0
     speed_multiplier: float = 1.0
     points_multiplier: float = 1.0
+    cost_multiplier: int = 1
 
 
 # Dict order is also the shop order and the order of number-key shortcuts.
 UPGRADES = {
-    "cat_petter": Upgrade("Cat Petter", 10, 2, 15, income=1.0),
-    "litter_box": Upgrade("Litter Box", 30, 10, 5, speed_multiplier=1.2),
-    "yarn_ball": Upgrade("Yarn Ball", 80, 80, 6, points_multiplier=2.0),
-    "cat_house": Upgrade("Cat House", 1000, 0, 1, income=100.0),
-    "golden_kitty": Upgrade("Golden Kitty", 5500, 0, 1),
+    "cat_petter": Upgrade("Cat Petter", 10, 10, 15, income=1.0),
+    "litter_box": Upgrade("Litter Box", 30, 0, 5, speed_multiplier=1.2, cost_multiplier=2),
+    "yarn_ball": Upgrade("Yarn Ball", 80, 0, 6, points_multiplier=2.0, cost_multiplier=2),
+    "cat_house": Upgrade("Cat House", 5999, 0, 1, income=100.0),
+    "golden_kitty": Upgrade("Golden Kitty", 50500, 0, 1),
 }
 
 # Display and assets.
@@ -170,20 +171,9 @@ CUTSCENE_NEXT_RECT = (1008, 734, 168, 42)
 CUTSCENE_SKIP_RECT = (1016, 20, 160, 42)
 CUTSCENE_QUIT_RECT = (1064, 72, 112, 36)
 CUTSCENE_CAPTION_RECT = (164, 723, 820, 62)
+# Optional captions in frame order. Empty sequences show only artwork and controls.
 CUTSCENE_CAPTIONS = {
-    "opening": (
-        "Just one little game before heading outside...",
-        "Meet the cat. The Golden Kitty is waiting in the shop.",
-        "Click the cat, buy helpers, and get Golden Kitty before the clock runs out!",
-    ),
-    "win": (
-        "Golden Kitty is yours! Wait... why is the screen glowing?",
-        "One last click pulls you straight into the game!",
-        "Welcome to a world of cats. Make yourself at home.",
-    ),
-    "lose": (
-        "Time is up. Golden Kitty will have to wait.",
-        "Maybe it is time for a different kind of adventure.",
-        "Fresh air. Sunshine. You finally touch grass.",
-    ),
+    "opening": (),
+    "win": (),
+    "lose": (),
 }

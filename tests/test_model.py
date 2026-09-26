@@ -24,13 +24,13 @@ class GameStateTests(unittest.TestCase):
         self.assertEqual(state.remaining, 230)
 
     def test_purchase_charges_current_price_and_increases_next_price(self):
-        state = GameState(points=22)
+        state = GameState(points=30)
         self.assertTrue(state.buy("cat_petter"))
-        self.assertEqual(state.points, 12)
-        self.assertEqual(state.price("cat_petter"), 12)
+        self.assertEqual(state.points, 20)
+        self.assertEqual(state.price("cat_petter"), 20)
         self.assertTrue(state.buy("cat_petter"))
         self.assertEqual(state.points, 0)
-        self.assertEqual(state.price("cat_petter"), 14)
+        self.assertEqual(state.price("cat_petter"), 30)
         self.assertEqual(state.points_per_second, 2)
 
     def test_unaffordable_purchase_changes_nothing(self):
@@ -49,22 +49,25 @@ class GameStateTests(unittest.TestCase):
 
     def test_each_limit_and_total_price(self):
         expected = {
-            "cat_petter": (15, 360),
-            "litter_box": (5, 250),
-            "yarn_ball": (6, 1680),
-            "cat_house": (1, 1000),
-            "golden_kitty": (1, 5500),
+            "cat_petter": (10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150),
+            "litter_box": (30, 60, 120, 240, 480),
+            "yarn_ball": (80, 160, 320, 640, 1280, 2560),
+            "cat_house": (5999,),
+            "golden_kitty": (50500,),
         }
-        for name, (limit, total) in expected.items():
+        for name, prices in expected.items():
             with self.subTest(upgrade=name):
-                state = GameState(points=10000)
-                for _ in range(limit):
+                state = GameState(points=100000)
+                for price in prices:
+                    self.assertEqual(state.price(name), price)
+                    before = state.points
                     self.assertTrue(state.buy(name))
-                self.assertEqual(state.points, 10000 - total)
-                self.assertEqual(state.owned[name], limit)
+                    self.assertEqual(state.points, before - price)
+                self.assertEqual(state.points, 100000 - sum(prices))
+                self.assertEqual(state.owned[name], len(prices))
                 self.assertTrue(state.at_limit(name))
                 self.assertFalse(state.buy(name))
-                self.assertEqual(state.points, 10000 - total)
+                self.assertEqual(state.points, 100000 - sum(prices))
 
     def test_five_litter_boxes_compound_speed(self):
         state = GameState(points=1000)
@@ -121,7 +124,7 @@ class GameStateTests(unittest.TestCase):
     def test_fractional_accumulation_can_pay_exact_price(self):
         state = GameState(points=10)
         state.buy("cat_petter")
-        for _ in range(120):
+        for _ in range(200):
             state.advance(0.1)
         self.assertTrue(state.buy("cat_petter"))
         self.assertAlmostEqual(state.points, 0)
@@ -151,13 +154,13 @@ class GameStateTests(unittest.TestCase):
         self.assertEqual((state.remaining, state.outcome), (0, "lose"))
 
     def test_having_enough_points_does_not_automatically_win(self):
-        state = GameState(points=5500)
+        state = GameState(points=50500)
         state.advance(240)
         self.assertEqual(state.outcome, "lose")
         self.assertFalse(state.buy("golden_kitty"))
 
     def test_buying_before_deadline_wins_and_freezes_state(self):
-        state = GameState(points=5500)
+        state = GameState(points=50500)
         state.advance(239.999)
         self.assertTrue(state.buy("golden_kitty"))
         remaining = state.remaining

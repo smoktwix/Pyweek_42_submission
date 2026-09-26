@@ -46,8 +46,12 @@ class GameTests(unittest.TestCase):
         self.assertEqual(self.game.screen.index, 1)
         self.game.step(0, [key(pygame.K_LEFT)])
         self.assertEqual(self.game.screen.index, 0)
-        for _ in range(3):
+        for index in range(1, 14):
             self.game.step(0, [key(pygame.K_SPACE)])
+            self.assertEqual(self.game.mode, "opening")
+            self.assertEqual(self.game.screen.index, index)
+            self.assertIsNone(self.game.state)
+        self.game.step(0, [key(pygame.K_SPACE)])
         self.assertEqual(self.game.mode, "playing")
         self.assertEqual(self.game.state.remaining, 240)
 
@@ -58,7 +62,7 @@ class GameTests(unittest.TestCase):
         self.assertEqual(self.game.screen.index, 0)
 
     def test_start_click_does_not_also_click_cat(self):
-        self.game.screen.index = 2
+        self.game.screen.index = len(self.game.screen.frames) - 1
         self.game.step(0, [click((400, 380)), click((400, 380))])
         self.assertEqual(self.game.mode, "playing")
         self.assertEqual(self.game.state.points, 0)
@@ -80,7 +84,7 @@ class GameTests(unittest.TestCase):
         self.game.step(0, [click((400, 380)) for _ in range(10)])
         self.game.step(0, [click(self.game.screen.cards["cat_petter"].center)])
         self.assertEqual((self.game.state.points, self.game.state.owned["cat_petter"]), (0, 1))
-        self.game.step(12, [key(pygame.K_1)])
+        self.game.step(20, [key(pygame.K_1)])
         self.assertEqual((self.game.state.points, self.game.state.owned["cat_petter"]), (0, 2))
 
     def test_meow_plays_only_for_manual_cat_clicks(self):
@@ -169,7 +173,7 @@ class GameTests(unittest.TestCase):
 
     def test_golden_purchase_shows_win_and_consumes_event_batch(self):
         self.start()
-        self.game.state.points = 5500
+        self.game.state.points = 50500
         self.game.step(239.99, [click(self.game.screen.cards["golden_kitty"].center), key(pygame.K_SPACE)])
         self.assertEqual(self.game.mode, "win")
         self.assertEqual(self.game.screen.index, 0)
@@ -177,7 +181,7 @@ class GameTests(unittest.TestCase):
 
     def test_deadline_wins_over_late_purchase_input(self):
         self.start()
-        self.game.state.points = 5500
+        self.game.state.points = 50500
         self.game.step(240, [key(pygame.K_5)])
         self.assertEqual(self.game.mode, "lose")
         self.assertEqual(self.game.state.owned["golden_kitty"], 0)
@@ -188,7 +192,7 @@ class GameTests(unittest.TestCase):
             with self.subTest(outcome=outcome):
                 self.game.start_round()
                 if outcome == "win":
-                    self.game.state.points = 5500
+                    self.game.state.points = 50500
                     self.game.step(1, [key(pygame.K_5)])
                 else:
                     self.game.step(240, [])
@@ -221,7 +225,8 @@ class GameTests(unittest.TestCase):
     def test_all_art_and_cutscene_frames_render(self):
         self.assertEqual(len(self.game.resources.images),
                          7 + len(self.game.resources.cat_petter_variants))
-        self.assertEqual(sum(map(len, self.game.resources.cutscenes.values())), 9)
+        self.assertEqual({name: len(frames) for name, frames in self.game.resources.cutscenes.items()},
+                         {"opening": 14, "win": 3, "lose": 3})
         for sequence, frames in self.game.resources.cutscenes.items():
             screen = CutsceneScreen(self.game.resources, sequence)
             for index in range(len(frames)):
@@ -234,7 +239,7 @@ class GameTests(unittest.TestCase):
 
     def test_gameplay_all_upgrades_and_pause_render(self):
         self.start()
-        self.game.state.points = 10000
+        self.game.state.points = 20000
         for name in config.PROP_AREAS:
             while not self.game.state.at_limit(name):
                 self.assertTrue(self.game.state.buy(name))

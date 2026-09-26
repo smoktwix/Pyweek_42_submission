@@ -115,7 +115,18 @@
       "frames": [
         "cutscenes/opening/open_cutscene_1.png",
         "cutscenes/opening/open_cutscene_2.png",
-        "cutscenes/opening/open_cutscene_3.png"
+        "cutscenes/opening/open_cutscene_3.png",
+        "cutscenes/opening/open_cutscene_4.png",
+        "cutscenes/opening/open_cutscene_5.png",
+        "cutscenes/opening/open_cutscene_6.png",
+        "cutscenes/opening/open_cutscene_7.png",
+        "cutscenes/opening/open_cutscene_8.png",
+        "cutscenes/opening/open_cutscene_9.png",
+        "cutscenes/opening/open_cutscene_10.png",
+        "cutscenes/opening/open_cutscene_11.png",
+        "cutscenes/opening/open_cutscene_12.png",
+        "cutscenes/opening/open_cutscene_13.png",
+        "cutscenes/opening/open_cutscene_14.png"
       ]
     },
     "win": {

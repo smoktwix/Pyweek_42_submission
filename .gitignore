@@ -1,10 +1,52 @@
-# Python-generated files
+# Python bytecode and packaging output
 __pycache__/
-*.py[oc]
+*.py[cod]
+$py.class
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
+.eggs/
+*.egg
 
 # Virtual environments
-.venv
+.venv/
+venv/
+env/
+ENV/
+
+# Tool caches, tests, and coverage reports
+.cache/
+.uv-cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Local environment settings and logs
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+*.log
+
+# Local editor settings and temporary files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Operating system metadata (at any directory level)
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Keep game assets, concept art, pyproject.toml, uv.lock, and .python-version tracked.

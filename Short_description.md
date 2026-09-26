@@ -15,11 +15,11 @@ Golden Kitty - Most Expensive, and the Main Goal.  Player's goal is to buy this 
 Timer - If Golden Kitty has not been bought once the timer is depleted, player gets a Game Over (Lose Variable). Total time of the game is 4 minutes.
 —------------------------------------------
 Upgrades available:
-- Cat Petter - Purchased with 10 points.  Automatically Gives +1 Point per second (Can buy this at most 15 times in total. Each buy increases the price of next buy by 2)
-- Litter Box - Purchased with 30 points. Increase the rate Cat Petters click by by 20% (Can buy this 5 times in total, Each buy increases the price of next buy of Litter Box by 10)
-- Yarn Ball - Purchased with 80 points. Multiplies the points of Cat Petter by 2 each time (Can buy 6 of these. Each buy of this increase the Price by 80)
-- Cat House - Purchased with 1000 points. Automatically Gives +100 Points per second (Can only get 1)
-- Golden Kitty - Purchased with 5500 points.
+- Cat Petter - Purchased with 10 points.  Automatically Gives +1 Point per second (Can buy this at most 15 times in total. Each buy increases the price of next buy by 10)
+- Litter Box - Purchased with 30 points. Increase the rate Cat Petters click by 20% (Can buy this 5 times in total. Each buy doubles the price of the next Litter Box)
+- Yarn Ball - Purchased with 80 points. Multiplies the points of Cat Petter by 2 each time (Can buy 6 of these. Each buy doubles the price of the next Yarn Ball)
+- Cat House - Purchased with 5999 points. Automatically Gives +100 Points per second (Can only get 1)
+- Golden Kitty - Purchased with 50500 points.
 
 When the play is on, there will be a static background image.
 
@@ -57,6 +57,6 @@ Implementation details:
 - Litter Box upgrades compound: each multiplies all Cat Petters' speed by 1.2.
 - Yarn Ball upgrades double all Cat Petters' output per purchase. Neither boost affects manual clicks or Cat House.
 - The four-minute timer starts after the opening cutscenes. Pausing or switching away from the window freezes both time and automatic income. Returning to the window requires an explicit resume.
-- Golden Kitty must actually be purchased before the deadline; merely reaching 5500 points does not win.
-- The temporary cutscenes are PNG files, with three frames per sequence, as listed in assets/manifest.json.
+- Golden Kitty must actually be purchased before the deadline; merely reaching 50500 points does not win.
+- Cutscenes are PNG files, with 14 opening frames and three frames each for win and lose, as listed in assets/manifest.json. The previous placeholder captions have been removed.
 - All tunable game settings live in cat_clicker/config.py.

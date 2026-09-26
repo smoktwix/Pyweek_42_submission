@@ -1,8 +1,8 @@
 # Cat Clicker
 
 A small Pygame game: click the cat, buy helpers, and purchase Golden Kitty before
-four minutes of active play run out. Opening, win, and lose cutscenes use the
-temporary artwork in `assets/`.
+four minutes of active play run out. Cutscenes use the artwork in `assets/`:
+14 opening frames and three frames each for win and lose.
 
 ## Run
 
@@ -34,8 +34,9 @@ to the project, so you can also launch `main.py` by its absolute path.
 - Cat Petters use every available paw color once in a shuffled order before starting a new shuffled cycle. Each purchased Cat Petter keeps its image for the round.
 - Cat Petters scatter around the cat's top and middle, Litter Boxes sit on the bottom-left ground, Yarn Balls sit on the bottom-right ground, and Cat House stands in the center on the ground. Pictures are slightly reduced for space, with smaller Yarn Balls. Positions stay fixed after purchase; crowded groups can overlap.
 - Each Litter Box multiplies Cat Petter speed by **1.2**; each Yarn Ball multiplies their output by **2**.
-- Cat House earns a separate **100 points/second**. Neither boost affects Cat House or manual clicks.
-- Buy **Golden Kitty for 5,500 points** while time remains to win. Having enough points alone does not win.
+- Cat Petters start at **10 points** and cost **10 more** after each purchase. Litter Boxes start at **30 points** and Yarn Balls at **80 points**; both prices **double** after each purchase.
+- Cat House costs **5,999 points** and earns a separate **100 points/second**. Neither boost affects Cat House or manual clicks.
+- Buy **Golden Kitty for 50,500 points** while time remains to win. Having enough points alone does not win.
 - **P**, **Escape**, or the **Pause** button opens the pause menu. Time, automatic income, and purchases all stop.
 - Switching away or minimizing pauses automatically. Return and explicitly resume when ready.
 - In cutscenes, use **Left/Right**, **Space/Enter**, or the on-screen buttons. Left-click advances; right-click goes back.
@@ -48,9 +49,10 @@ surrounding bars are ignored.
 ## Configuration and code
 
 Edit **[cat_clicker/config.py](cat_clicker/config.py)** and restart to change the
-title, duration, click value, upgrade prices, price increments, limits, income,
+title, duration, click value, upgrade prices, price increments and multipliers, limits, income,
 multipliers, pause behavior, controls, window size, colors, fonts, layout, and
-animation settings. Prices are `base_cost + cost_increase * number_owned`.
+animation settings. Prices are `base_cost * cost_multiplier ** number_owned + cost_increase * number_owned`.
+Use `cost_multiplier=1` for additive prices or `cost_increase=0` for multiplicative prices.
 
 `PROP_SCALES` controls the play-area sizes relative to the original PNGs: 85% for
 Cat Petters, Litter Boxes, and Cat House; 70% for Yarn Balls. `PROP_AREAS` controls
@@ -101,7 +103,8 @@ the layout block in the asset manifest is an art reference.
 
 See the **[asset replacement guide](assets/README.md)** for PNG dimensions,
 transparency, and filenames. `assets/manifest.json` lists asset paths and explicit
-cutscene order. Put new caption text in `CUTSCENE_CAPTIONS` if adding frames.
+cutscene order. The old placeholder captions are removed; `CUTSCENE_CAPTIONS`
+can supply optional captions in frame order.
 
 ## Validate
 

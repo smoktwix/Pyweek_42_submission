@@ -35,7 +35,8 @@ class GameState:
 
     def price(self, upgrade_id):
         spec = config.UPGRADES[upgrade_id]
-        return spec.base_cost + spec.cost_increase * self.owned[upgrade_id]
+        owned = self.owned[upgrade_id]
+        return spec.base_cost * spec.cost_multiplier ** owned + spec.cost_increase * owned
 
     def at_limit(self, upgrade_id):
         return self.owned[upgrade_id] >= config.UPGRADES[upgrade_id].limit
