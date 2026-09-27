@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 # Game rules (seconds, points, and multipliers).
-TITLE = "Cat Clicker"
+TITLE = "Cat Clicker Simulator"
 GAME_DURATION = 240.0
 STARTING_POINTS = 0.0
 POINTS_PER_CLICK = 1
@@ -55,8 +55,14 @@ CAT_HIT_ALPHA = 128
 SFX_ENABLED = True
 SFX_VOLUME = 0.5
 SFX_CHANNELS = 4  # Maximum overlapping meows; rapid clicks replace the oldest.
-SFX_BUFFER_SIZE = 512
+SFX_BUFFER_SIZE = 512  # Shared audio mixer buffer size.
 CAT_MEOW_PATH = ASSET_DIR / "audio/sfx/729031__redjamie7__cat-smokey-meow-1.mp3"
+
+# Background music streams separately from the meow sound channels.
+MUSIC_ENABLED = True
+MUSIC_VOLUME = 0.4
+CUTSCENE_MUSIC_PATH = ASSET_DIR / "audio/music/Curious_Cat_Quest_1.mp3"
+GAMEPLAY_MUSIC_PATH = ASSET_DIR / "audio/music/Curious_Cat_Quest_2.mp3"
 
 # Controls use pygame.key.name spellings; change these to rebind keys.
 PAUSE_KEYS = ("p", "escape")
@@ -88,7 +94,6 @@ CORNER_RADIUS = 12
 BUTTON_TEXT_PADDING = 12
 LINE_GAP = 4
 OVERLAY_ALPHA = 175
-TITLE_OVERLAY_ALPHA = 155
 
 # HUD: coordinates are top-left unless the name says CENTER.
 HUD_RECT = (0, 0, 1200, 80)
@@ -161,16 +166,15 @@ RESUME_BUTTON_RECT = (430, 364, 340, 52)
 RESTART_BUTTON_RECT = (430, 426, 340, 52)
 QUIT_BUTTON_RECT = (430, 488, 340, 52)
 
-# Shared cutscene screen. Sequences and PNG order come from the manifest.
+# Shared cutscene screen. Frame order comes from the manifest; controls sit below the art.
 CUTSCENE_PANEL_RECT = (0, 710, 1200, 90)
-CUTSCENE_TITLE_RECT = (16, 16, 450, 84)
-CUTSCENE_TITLE_POS = (30, 24)
-CUTSCENE_COUNTER_POS = (32, 68)
+CUTSCENE_TITLE_POS = (164, 718)
+CUTSCENE_COUNTER_POS = (164, 766)
 CUTSCENE_BACK_RECT = (24, 734, 116, 42)
 CUTSCENE_NEXT_RECT = (1008, 734, 168, 42)
-CUTSCENE_SKIP_RECT = (1016, 20, 160, 42)
-CUTSCENE_QUIT_RECT = (1064, 72, 112, 36)
-CUTSCENE_CAPTION_RECT = (164, 723, 820, 62)
+CUTSCENE_SKIP_RECT = (824, 734, 160, 42)
+CUTSCENE_QUIT_RECT = (692, 734, 112, 42)
+CUTSCENE_CAPTION_RECT = (164, 716, 510, 44)
 # Optional captions in frame order. Empty sequences show only artwork and controls.
 CUTSCENE_CAPTIONS = {
     "opening": (),

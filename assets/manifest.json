@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Temporary Cat Clicker artwork. Paths are relative to assets/. Pixel sizes are replacement contracts.",
+  "description": "Cat Clicker Simulator artwork. Paths are relative to assets/. Pixel sizes are replacement contracts.",
   "reference_resolution": [
     1200,
     800
@@ -126,7 +126,17 @@
         "cutscenes/opening/open_cutscene_11.png",
         "cutscenes/opening/open_cutscene_12.png",
         "cutscenes/opening/open_cutscene_13.png",
-        "cutscenes/opening/open_cutscene_14.png"
+        "cutscenes/opening/open_cutscene_14.png",
+        "cutscenes/opening/open_cutscene_15.png",
+        "cutscenes/opening/open_cutscene_16.png",
+        "cutscenes/opening/open_cutscene_17.png",
+        "cutscenes/opening/open_cutscene_18.png",
+        "cutscenes/opening/open_cutscene_19.png",
+        "cutscenes/opening/open_cutscene_20.png",
+        "cutscenes/opening/open_cutscene_21.png",
+        "cutscenes/opening/open_cutscene_22.png",
+        "cutscenes/opening/open_cutscene_23.png",
+        "cutscenes/opening/open_cutscene_24.png"
       ]
     },
     "win": {
@@ -138,8 +148,30 @@
       "frames": [
         "cutscenes/win/win_cutscene_1.png",
         "cutscenes/win/win_cutscene_2.png",
-        "cutscenes/win/win_cutscene_3.png"
-      ]
+        "cutscenes/win/win_cutscene_3.png",
+        "cutscenes/win/win_cutscene_4.png",
+        "cutscenes/win/win_cutscene_5.png",
+        "cutscenes/win/win_cutscene_6.png",
+        "cutscenes/win/win_cutscene_7.png",
+        "cutscenes/win/win_cutscene_8.png",
+        "cutscenes/win/win_cutscene_9.png",
+        "cutscenes/win/win_cutscene_10.png",
+        "cutscenes/win/win_cutscene_11.png",
+        "cutscenes/win/win_cutscene_12.png",
+        "cutscenes/win/win_cutscene_13.png",
+        "cutscenes/win/win_cutscene_14.png",
+        "cutscenes/win/win_cutscene_15.png",
+        "cutscenes/win/win_cutscene_16.png",
+        "cutscenes/win/win_cutscene_17.png",
+        "cutscenes/win/win_cutscene_18.png",
+        "cutscenes/win/win_cutscene_19.png",
+        "cutscenes/win/win_cutscene_20.png",
+        "cutscenes/win/win_cutscene_21.png",
+        "cutscenes/win/win_cutscene_22.png"
+      ],
+      "alternates": {
+        "cutscenes/win/win_cutscene_9.png": "cutscenes/win/win_cutscene_9 (No Pixels).png"
+      }
     },
     "lose": {
       "size": [
@@ -150,7 +182,10 @@
       "frames": [
         "cutscenes/lose/lose_cutscene_1.png",
         "cutscenes/lose/lose_cutscene_2.png",
-        "cutscenes/lose/lose_cutscene_3.png"
+        "cutscenes/lose/lose_cutscene_3.png",
+        "cutscenes/lose/lose_cutscene_4.png",
+        "cutscenes/lose/lose_cutscene_5.png",
+        "cutscenes/lose/lose_cutscene_6.png"
       ]
     }
   }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cat Clicker — asset preview</title>
+<title>Cat Clicker Simulator — asset preview</title>
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; background: #f7f3ec; color: #34312e; font: 16px/1.5 system-ui, sans-serif; }
@@ -43,8 +43,8 @@ small { display: block; color: #746d64; font-weight: 400; }
 </head>
 <body>
 <main>
-<h1>Cat Clicker · artwork</h1>
-<p>Artwork for a 1200 × 800 game, including all 14 opening frames. Click a gallery image to view its full canvas. <a href="README.md">Replacement guide</a> · <a href="manifest.json">Asset manifest</a></p>
+<h1>Cat Clicker Simulator · artwork</h1>
+<p>Artwork for a 1200 × 800 game, including 24 opening, 22 win, and 6 lose frames. Click a gallery image to view its full canvas. <a href="README.md">Replacement guide</a> · <a href="manifest.json">Asset manifest</a></p>
 <section>
 <h2>Gameplay composition</h2>
 <p>A layout preview with sample UI text. Move your pointer over the scene to try the mouse cursor.</p>
@@ -72,27 +72,66 @@ small { display: block; color: #746d64; font-weight: 400; }
 <figure><a class="checker sprite" href="images/upgrades/cat_house.png"><img src="images/upgrades/cat_house.png" alt="Cat House" ></a><figcaption>Cat House <small>256 × 256 · transparent</small></figcaption></figure>
 <figure><a class="checker sprite" href="images/ui/mouse_cursor.png"><img src="images/ui/mouse_cursor.png" alt="Mouse cursor" style="width:48px;height:48px"></a><figcaption>Mouse cursor <small>48 × 48 · transparent</small></figcaption></figure></div></section>
 <section><h2>Opening cutscenes</h2><div class="frames">
-<figure><a href="cutscenes/opening/open_cutscene_1.png"><img src="cutscenes/opening/open_cutscene_1.png" alt="Opening frame 1" width="1200" height="800"></a><figcaption>Opening frame 1<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_2.png"><img src="cutscenes/opening/open_cutscene_2.png" alt="Opening frame 2" width="1200" height="800"></a><figcaption>Opening frame 2<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_3.png"><img src="cutscenes/opening/open_cutscene_3.png" alt="Opening frame 3" width="1200" height="800"></a><figcaption>Opening frame 3<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_4.png"><img src="cutscenes/opening/open_cutscene_4.png" alt="Opening frame 4" width="1200" height="800"></a><figcaption>Opening frame 4<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_5.png"><img src="cutscenes/opening/open_cutscene_5.png" alt="Opening frame 5" width="1200" height="800"></a><figcaption>Opening frame 5<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_6.png"><img src="cutscenes/opening/open_cutscene_6.png" alt="Opening frame 6" width="1200" height="800"></a><figcaption>Opening frame 6<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_7.png"><img src="cutscenes/opening/open_cutscene_7.png" alt="Opening frame 7" width="1200" height="800"></a><figcaption>Opening frame 7<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_8.png"><img src="cutscenes/opening/open_cutscene_8.png" alt="Opening frame 8" width="1200" height="800"></a><figcaption>Opening frame 8<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_9.png"><img src="cutscenes/opening/open_cutscene_9.png" alt="Opening frame 9" width="1200" height="800"></a><figcaption>Opening frame 9<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_10.png"><img src="cutscenes/opening/open_cutscene_10.png" alt="Opening frame 10" width="1200" height="800"></a><figcaption>Opening frame 10<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_11.png"><img src="cutscenes/opening/open_cutscene_11.png" alt="Opening frame 11" width="1200" height="800"></a><figcaption>Opening frame 11<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_12.png"><img src="cutscenes/opening/open_cutscene_12.png" alt="Opening frame 12" width="1200" height="800"></a><figcaption>Opening frame 12<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_13.png"><img src="cutscenes/opening/open_cutscene_13.png" alt="Opening frame 13" width="1200" height="800"></a><figcaption>Opening frame 13<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/opening/open_cutscene_14.png"><img src="cutscenes/opening/open_cutscene_14.png" alt="Opening frame 14" width="1200" height="800"></a><figcaption>Opening frame 14<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_1.png"><img src="cutscenes/opening/open_cutscene_1.png" alt="Opening frame 1" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 1<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_2.png"><img src="cutscenes/opening/open_cutscene_2.png" alt="Opening frame 2" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 2<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_3.png"><img src="cutscenes/opening/open_cutscene_3.png" alt="Opening frame 3" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 3<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_4.png"><img src="cutscenes/opening/open_cutscene_4.png" alt="Opening frame 4" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 4<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_5.png"><img src="cutscenes/opening/open_cutscene_5.png" alt="Opening frame 5" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 5<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_6.png"><img src="cutscenes/opening/open_cutscene_6.png" alt="Opening frame 6" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 6<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_7.png"><img src="cutscenes/opening/open_cutscene_7.png" alt="Opening frame 7" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 7<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_8.png"><img src="cutscenes/opening/open_cutscene_8.png" alt="Opening frame 8" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 8<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_9.png"><img src="cutscenes/opening/open_cutscene_9.png" alt="Opening frame 9" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 9<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_10.png"><img src="cutscenes/opening/open_cutscene_10.png" alt="Opening frame 10" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 10<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_11.png"><img src="cutscenes/opening/open_cutscene_11.png" alt="Opening frame 11" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 11<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_12.png"><img src="cutscenes/opening/open_cutscene_12.png" alt="Opening frame 12" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 12<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_13.png"><img src="cutscenes/opening/open_cutscene_13.png" alt="Opening frame 13" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 13<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_14.png"><img src="cutscenes/opening/open_cutscene_14.png" alt="Opening frame 14" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 14<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_15.png"><img src="cutscenes/opening/open_cutscene_15.png" alt="Opening frame 15" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 15<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_16.png"><img src="cutscenes/opening/open_cutscene_16.png" alt="Opening frame 16" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 16<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_17.png"><img src="cutscenes/opening/open_cutscene_17.png" alt="Opening frame 17" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 17<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_18.png"><img src="cutscenes/opening/open_cutscene_18.png" alt="Opening frame 18" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 18<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_19.png"><img src="cutscenes/opening/open_cutscene_19.png" alt="Opening frame 19" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 19<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_20.png"><img src="cutscenes/opening/open_cutscene_20.png" alt="Opening frame 20" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 20<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_21.png"><img src="cutscenes/opening/open_cutscene_21.png" alt="Opening frame 21" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 21<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_22.png"><img src="cutscenes/opening/open_cutscene_22.png" alt="Opening frame 22" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 22<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_23.png"><img src="cutscenes/opening/open_cutscene_23.png" alt="Opening frame 23" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 23<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/opening/open_cutscene_24.png"><img src="cutscenes/opening/open_cutscene_24.png" alt="Opening frame 24" width="1200" height="800" loading="lazy"></a><figcaption>Opening frame 24<small>1200 × 800</small></figcaption></figure>
 </div></section>
-<section><h2>Win cutscenes</h2><div class="frames"><figure><a href="cutscenes/win/win_cutscene_1.png"><img src="cutscenes/win/win_cutscene_1.png" alt="Buying Golden Kitty" width="1200" height="800"></a><figcaption>1. Buying Golden Kitty<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/win/win_cutscene_2.png"><img src="cutscenes/win/win_cutscene_2.png" alt="Pulled into the screen" width="1200" height="800"></a><figcaption>2. Pulled into the screen<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/win/win_cutscene_3.png"><img src="cutscenes/win/win_cutscene_3.png" alt="Inside the cat game" width="1200" height="800"></a><figcaption>3. Inside the cat game<small>1200 × 800</small></figcaption></figure></div></section>
-<section><h2>Lose cutscenes</h2><div class="frames"><figure><a href="cutscenes/lose/lose_cutscene_1.png"><img src="cutscenes/lose/lose_cutscene_1.png" alt="Time runs out" width="1200" height="800"></a><figcaption>1. Time runs out<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/lose/lose_cutscene_2.png"><img src="cutscenes/lose/lose_cutscene_2.png" alt="Heading outside" width="1200" height="800"></a><figcaption>2. Heading outside<small>1200 × 800</small></figcaption></figure>
-<figure><a href="cutscenes/lose/lose_cutscene_3.png"><img src="cutscenes/lose/lose_cutscene_3.png" alt="Touching grass" width="1200" height="800"></a><figcaption>3. Touching grass<small>1200 × 800</small></figcaption></figure></div></section>
+<section><h2>Win cutscenes</h2><div class="frames">
+<figure><a href="cutscenes/win/win_cutscene_1.png"><img src="cutscenes/win/win_cutscene_1.png" alt="Win frame 1" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 1<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_2.png"><img src="cutscenes/win/win_cutscene_2.png" alt="Win frame 2" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 2<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_3.png"><img src="cutscenes/win/win_cutscene_3.png" alt="Win frame 3" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 3<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_4.png"><img src="cutscenes/win/win_cutscene_4.png" alt="Win frame 4" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 4<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_5.png"><img src="cutscenes/win/win_cutscene_5.png" alt="Win frame 5" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 5<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_6.png"><img src="cutscenes/win/win_cutscene_6.png" alt="Win frame 6" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 6<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_7.png"><img src="cutscenes/win/win_cutscene_7.png" alt="Win frame 7" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 7<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_8.png"><img src="cutscenes/win/win_cutscene_8.png" alt="Win frame 8" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 8<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_9.png"><img src="cutscenes/win/win_cutscene_9.png" alt="Win frame 9" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 9<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_10.png"><img src="cutscenes/win/win_cutscene_10.png" alt="Win frame 10" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 10<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_11.png"><img src="cutscenes/win/win_cutscene_11.png" alt="Win frame 11" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 11<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_12.png"><img src="cutscenes/win/win_cutscene_12.png" alt="Win frame 12" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 12<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_13.png"><img src="cutscenes/win/win_cutscene_13.png" alt="Win frame 13" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 13<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_14.png"><img src="cutscenes/win/win_cutscene_14.png" alt="Win frame 14" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 14<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_15.png"><img src="cutscenes/win/win_cutscene_15.png" alt="Win frame 15" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 15<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_16.png"><img src="cutscenes/win/win_cutscene_16.png" alt="Win frame 16" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 16<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_17.png"><img src="cutscenes/win/win_cutscene_17.png" alt="Win frame 17" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 17<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_18.png"><img src="cutscenes/win/win_cutscene_18.png" alt="Win frame 18" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 18<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_19.png"><img src="cutscenes/win/win_cutscene_19.png" alt="Win frame 19" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 19<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_20.png"><img src="cutscenes/win/win_cutscene_20.png" alt="Win frame 20" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 20<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_21.png"><img src="cutscenes/win/win_cutscene_21.png" alt="Win frame 21" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 21<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/win/win_cutscene_22.png"><img src="cutscenes/win/win_cutscene_22.png" alt="Win frame 22" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 22<small>1200 × 800</small></figcaption></figure>
+</div></section>
+<section><h2>Lose cutscenes</h2><div class="frames">
+<figure><a href="cutscenes/lose/lose_cutscene_1.png"><img src="cutscenes/lose/lose_cutscene_1.png" alt="Lose frame 1" width="1200" height="800" loading="lazy"></a><figcaption>Lose frame 1<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/lose/lose_cutscene_2.png"><img src="cutscenes/lose/lose_cutscene_2.png" alt="Lose frame 2" width="1200" height="800" loading="lazy"></a><figcaption>Lose frame 2<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/lose/lose_cutscene_3.png"><img src="cutscenes/lose/lose_cutscene_3.png" alt="Lose frame 3" width="1200" height="800" loading="lazy"></a><figcaption>Lose frame 3<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/lose/lose_cutscene_4.png"><img src="cutscenes/lose/lose_cutscene_4.png" alt="Lose frame 4" width="1200" height="800" loading="lazy"></a><figcaption>Lose frame 4<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/lose/lose_cutscene_5.png"><img src="cutscenes/lose/lose_cutscene_5.png" alt="Lose frame 5" width="1200" height="800" loading="lazy"></a><figcaption>Lose frame 5<small>1200 × 800</small></figcaption></figure>
+<figure><a href="cutscenes/lose/lose_cutscene_6.png"><img src="cutscenes/lose/lose_cutscene_6.png" alt="Lose frame 6" width="1200" height="800" loading="lazy"></a><figcaption>Lose frame 6<small>1200 × 800</small></figcaption></figure>
+</div></section>
+<section><h2>Alternate artwork</h2><p>The game uses the numbered win frame 9 with its pixel effect. This clean version is available as an alternate.</p><div class="frames">
+<figure><a href="cutscenes/win/win_cutscene_9%20(No%20Pixels).png"><img src="cutscenes/win/win_cutscene_9%20(No%20Pixels).png" alt="Win frame 9 without the pixel effect" width="1200" height="800" loading="lazy"></a><figcaption>Win frame 9 — No Pixels<small>Alternate, not part of playback · 1200 × 800</small></figcaption></figure>
+</div></section>
 </main>
 </body>
 </html>

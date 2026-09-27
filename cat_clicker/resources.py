@@ -1,4 +1,4 @@
-"""Load artwork and sound once, using paths relative to the project."""
+"""Load artwork and sound effects, and stream music from project-relative paths."""
 
 import json
 import logging
@@ -29,21 +29,60 @@ class Resources:
             if not frames:
                 raise ValueError(f"Cutscene {name!r} needs at least one image")
         self.fonts = {name: pygame.font.Font(None, size) for name, size in config.FONT_SIZES.items()}
+        self._init_audio()
         self.cat_meow = self._load_cat_meow()
+        self._music_path = None
+        self._music_paused = False
+        self._failed_music_paths = set()
 
     @staticmethod
-    def _load_cat_meow():
-        if not config.SFX_ENABLED:
-            return None
+    def _init_audio():
+        if not (config.SFX_ENABLED or config.MUSIC_ENABLED):
+            return
         try:
             pygame.mixer.init(buffer=config.SFX_BUFFER_SIZE)
             pygame.mixer.set_num_channels(config.SFX_CHANNELS)
+        except pygame.error as error:
+            logging.getLogger(__name__).warning("Audio unavailable; continuing silently: %s", error)
+
+    @staticmethod
+    def _load_cat_meow():
+        if not config.SFX_ENABLED or not pygame.mixer.get_init():
+            return None
+        try:
             sound = pygame.mixer.Sound(str(config.CAT_MEOW_PATH))
             sound.set_volume(config.SFX_VOLUME)
             return sound
         except (OSError, pygame.error) as error:
-            logging.getLogger(__name__).warning("Sound unavailable; continuing silently: %s", error)
+            logging.getLogger(__name__).warning("Meow unavailable; continuing without it: %s", error)
             return None
+
+    def set_music(self, path, paused=False):
+        """Loop the selected track; preserve its position while browsing or pausing."""
+        if not pygame.mixer.get_init():
+            return
+        if not config.MUSIC_ENABLED or path in self._failed_music_paths:
+            path = None
+        if path != self._music_path:
+            pygame.mixer.music.stop()
+            self._music_path = None
+            self._music_paused = False
+            if path is not None:
+                try:
+                    pygame.mixer.music.load(str(path))
+                    pygame.mixer.music.set_volume(config.MUSIC_VOLUME)
+                    pygame.mixer.music.play(-1)
+                    self._music_path = path
+                except (OSError, pygame.error) as error:
+                    self._failed_music_paths.add(path)
+                    logging.getLogger(__name__).warning("Music unavailable (%s): %s", path, error)
+                    return
+        if self._music_path is not None and paused != self._music_paused:
+            if paused:
+                pygame.mixer.music.pause()
+            else:
+                pygame.mixer.music.unpause()
+            self._music_paused = paused
 
     def play_cat_meow(self):
         if self.cat_meow is not None:

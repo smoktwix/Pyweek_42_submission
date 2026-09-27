@@ -50,21 +50,24 @@ class CutsceneScreen:
 
     def draw(self, surface, pos):
         frame = self.frames[self.index]
-        if frame.get_size() != config.CANVAS_SIZE:
-            frame = pygame.transform.smoothscale(frame, config.CANVAS_SIZE)
-        surface.blit(frame, (0, 0))
-        title_rect = pygame.Rect(config.CUTSCENE_TITLE_RECT)
-        shade = pygame.Surface(title_rect.size, pygame.SRCALPHA)
-        shade.fill((*config.COLORS["letterbox"], config.TITLE_OVERLAY_ALPHA))
-        surface.blit(shade, title_rect)
-        title = {"opening": config.TITLE, "win": "You won!", "lose": "Time is up"}[self.sequence]
-        text(surface, self.resources, title, config.CUTSCENE_TITLE_POS, "title", "white")
-        text(surface, self.resources, f"{self.index + 1} / {len(self.frames)}   |   Left / Right to browse",
-             config.CUTSCENE_COUNTER_POS, "small", "white")
-        pygame.draw.rect(surface, config.COLORS["paper"], config.CUTSCENE_PANEL_RECT)
+        panel = pygame.Rect(config.CUTSCENE_PANEL_RECT)
+        # Keep the full drawing (including embedded dialogue) above the controls.
+        art_area = pygame.Rect(0, 0, config.CANVAS_SIZE[0], panel.top)
+        frame_rect = frame.get_rect().fit(art_area)
+        surface.fill(config.COLORS["letterbox"])
+        if frame.get_size() != frame_rect.size:
+            frame = pygame.transform.smoothscale(frame, frame_rect.size)
+        surface.blit(frame, frame_rect)
+        pygame.draw.rect(surface, config.COLORS["paper"], panel)
         captions = config.CUTSCENE_CAPTIONS[self.sequence]
         caption = captions[self.index] if self.index < len(captions) else ""
-        paragraph(surface, self.resources, caption, config.CUTSCENE_CAPTION_RECT)
+        if caption:
+            paragraph(surface, self.resources, caption, config.CUTSCENE_CAPTION_RECT)
+        else:
+            title = {"opening": config.TITLE, "win": "You won!", "lose": "Time is up"}[self.sequence]
+            text(surface, self.resources, title, config.CUTSCENE_TITLE_POS, "title")
+        text(surface, self.resources, f"{self.index + 1} / {len(self.frames)}   |   Left / Right to browse",
+             config.CUTSCENE_COUNTER_POS, "small", "muted")
         self.back_button.draw(surface, self.resources, pos, enabled=self.index > 0)
         self.next_button.label = "Next"
         if self.index == len(self.frames) - 1:

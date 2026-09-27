@@ -1,7 +1,7 @@
 [project]
 name = "pyweek-42-submission"
 version = "0.1.0"
-description = "A four-minute cat clicker made with Pygame"
+description = "Cat Clicker Simulator, a four-minute game made with Pygame"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = ["pygame==2.6.1"]

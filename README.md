@@ -1,8 +1,8 @@
-# Cat Clicker
+# Cat Clicker Simulator
 
 A small Pygame game: click the cat, buy helpers, and purchase Golden Kitty before
 four minutes of active play run out. Cutscenes use the artwork in `assets/`:
-14 opening frames and three frames each for win and lose.
+24 opening frames, 22 win frames, and 6 lose frames, played in numeric order.
 
 ## Run
 
@@ -28,6 +28,7 @@ to the project, so you can also launch `main.py` by its absolute path.
 ## How to play
 
 - Click the visible cat to earn one point and play a meow. Holding the button does not repeat clicks. Automatic income and shop purchases stay silent.
+- Background music loops: **Curious Cat Quest 1** during all cutscenes and **Curious Cat Quest 2** during gameplay. Music pauses with the game or when the window loses focus.
 - Successive +1 popups follow rainbow colors, each blending into the next color as it floats upward.
 - Click a shop card or press **1–5** to purchase its upgrade. Hover over a card for its effect.
 - Each purchased helper gets its own picture in the play area: up to 15 Cat Petters, 5 Litter Boxes, 6 Yarn Balls, and 1 Cat House. The shop also shows how many you own.
@@ -40,6 +41,7 @@ to the project, so you can also launch `main.py` by its absolute path.
 - **P**, **Escape**, or the **Pause** button opens the pause menu. Time, automatic income, and purchases all stop.
 - Switching away or minimizing pauses automatically. Return and explicitly resume when ready.
 - In cutscenes, use **Left/Right**, **Space/Enter**, or the on-screen buttons. Left-click advances; right-click goes back.
+- Cutscene artwork fits above the controls so the full drawing and its dialogue stay visible.
 - **Start game** skips the opening. **Play again** at the end starts a fresh round. The pause menu also offers a restart.
 - Close the window or choose **Quit** to exit.
 
@@ -69,10 +71,17 @@ Cat Petter artwork includes `cat_petter.png` and all files matching
 `assets/`). Add matching transparent 256 × 256 PNGs and restart to include more
 variants. All variants use the same `PROP_SCALES["cat_petter"]` setting.
 
-`SFX_VOLUME` controls meow volume (0.0–1.0), and `SFX_ENABLED` turns sound on or
+`SFX_VOLUME` controls meow volume (0.0–1.0), and `SFX_ENABLED` turns meows on or
 off. `CAT_MEOW_PATH` selects the sound file. `SFX_CHANNELS` limits overlapping
 meows; rapid clicks replace the oldest when all channels are busy. If audio is
 unavailable, the game logs the problem and continues silently.
+
+`MUSIC_ENABLED` and `MUSIC_VOLUME` control background music independently.
+`CUTSCENE_MUSIC_PATH` selects `Curious_Cat_Quest_1.mp3` for opening, win, and lose
+cutscenes; `GAMEPLAY_MUSIC_PATH` selects `Curious_Cat_Quest_2.mp3` for play.
+Both files live in `assets/audio/music/` and loop continuously. Browsing cutscene
+frames and pausing/resuming preserve the current track's position; switching
+between cutscenes and gameplay starts the appropriate track from the beginning.
 
 `CLICK_POPUP_COLORS` sets the rainbow sequence. Each click starts with the next
 color and blends into the following one over `CLICK_POPUP_SECONDS`, rising by

@@ -1,6 +1,6 @@
-# Cat Clicker assets
+# Cat Clicker Simulator assets
 
-The artwork uses the **1200 × 800 (3:2)** canvas of the concept drawings. The opening sequence now uses 14 supplied drawings. Some remaining assets are temporary AI-generated PNGs, ready to replace with your own drawings.
+The artwork uses the **1200 × 800 (3:2)** canvas of the concept drawings. The game uses 24 opening drawings, 22 win drawings, and 6 lose drawings. A clean alternate of win frame 9 is also included.
 
 Open [preview.html](preview.html) in a browser to review the gameplay composition, toggle purchased objects, try the cursor, and browse all cutscenes. It works directly from disk without installing anything or starting a server.
 
@@ -19,12 +19,13 @@ All paths below are relative to this directory.
 | Yarn Ball | `images/upgrades/yarn_ball.png` | 256 × 256 | Transparent |
 | Cat House | `images/upgrades/cat_house.png` | 256 × 256 | Transparent |
 | Animal mouse cursor | `images/ui/mouse_cursor.png` | 48 × 48 | Transparent |
-| Opening frames 1–14 | `cutscenes/opening/open_cutscene_1.png` through `open_cutscene_14.png` | 1200 × 800 each | Opaque |
-| Win frames 1–3 | `cutscenes/win/win_cutscene_1.png` through `win_cutscene_3.png` | 1200 × 800 each | Opaque |
-| Lose frames 1–3 | `cutscenes/lose/lose_cutscene_1.png` through `lose_cutscene_3.png` | 1200 × 800 each | Opaque |
+| Opening frames 1–24 | `cutscenes/opening/open_cutscene_1.png` through `open_cutscene_24.png` | 1200 × 800 each | Opaque |
+| Win frames 1–22 | `cutscenes/win/win_cutscene_1.png` through `win_cutscene_22.png` | 1200 × 800 each | Opaque |
+| Lose frames 1–6 | `cutscenes/lose/lose_cutscene_1.png` through `lose_cutscene_6.png` | 1200 × 800 each | Opaque |
+| Win frame 9 alternate | `cutscenes/win/win_cutscene_9 (No Pixels).png` | 1200 × 800 | Opaque |
 
-There are **36 PNGs**: eight base gameplay images, eight extra Cat Petter variants,
-and 20 cutscene frames. Cat Petters use the base image and every variant once
+There are **69 image files**: eight base gameplay images, eight extra Cat Petter variants,
+52 cutscene frames in playback, and one alternate. Cat Petters use the base image and every variant once
 in a shuffled order before repeating with a new shuffled cycle. Each keeps its
 choice throughout the round. Add more
 `images/upgrades/cat_petter_*.png` files at 256 × 256 with transparency and restart
@@ -37,28 +38,37 @@ the game to include them automatically.
 - Place the background at `(0, 0)` and the main cat at `(120, 100)`. Reserve the top 80 pixels for timer/points and the bottom 140 pixels for the shop, following the concept art.
 - The five 256 × 256 sprites are reusable source images. A suggested shop display size is **80 × 80**. Purchased objects can use larger, uniform scales in the play area.
 - The cursor's click hotspot is **(12, 12)**, at the mouse's nose. Draw its 48 × 48 canvas at mouse position minus this offset. Keep the nose at this point when replacing the artwork.
-- Cutscenes fill the screen. Keep important action above the bottom 90 pixels so navigation and optional captions can be drawn over that area.
-- Prices, counts, timer, labels, and buttons belong in game code. The opening drawings include their own story text; the old placeholder captions have been removed from all sequences.
+- Cutscenes keep their 3:2 proportions and fit completely above the bottom 90-pixel control panel. Titles, navigation, and optional captions stay in that panel so they cannot cover the artwork or its dialogue.
+- Prices, counts, timer, labels, and buttons belong in game code. The cutscene drawings include their own story text; the old placeholder captions have been removed from all sequences.
 - Load sprites with Pygame's `convert_alpha()` after creating the display. Load opaque backgrounds/cutscenes with `convert()`.
 
-## Sound effects
+## Sound and music
 
 `audio/sfx/729031__redjamie7__cat-smokey-meow-1.mp3` plays when the player clicks
 the cat. It is loaded once and reused for subsequent clicks. Change
 `CAT_MEOW_PATH`, `SFX_VOLUME`, or `SFX_ENABLED` in `cat_clicker/config.py` to replace,
 adjust, or mute it.
 
+`audio/music/Curious_Cat_Quest_1.mp3` loops during opening, win, and lose
+cutscenes. `audio/music/Curious_Cat_Quest_2.mp3` loops during gameplay.
+Music pauses with the game and while the window is unfocused, then resumes
+from the same position. Switching between cutscenes and gameplay starts the
+new track from the beginning. `MUSIC_ENABLED`, `MUSIC_VOLUME`,
+`CUTSCENE_MUSIC_PATH`, and `GAMEPLAY_MUSIC_PATH` configure music independently
+of the meow effect. A missing audio device or track does not prevent play.
+
 ## Storyboard order
 
-The opening plays `open_cutscene_1.png` through `open_cutscene_14.png` in numeric order, then starts the game. The win and lose sequences still have three frames each:
+Every numbered frame plays once, in numeric order:
 
-| Sequence | Frame 1 | Frame 2 | Frame 3 |
+| Sequence | Frames | Trigger | After the last frame |
 | --- | --- | --- | --- |
-| Win | Golden Kitty purchase succeeds | The monitor pulls her into the game | She is inside the game with the cats |
-| Lose | Time runs out | She leaves the computer and steps outside | She touches grass |
+| Opening | 1–24 | Launch the game | Start a new round |
+| Win | 1–22 | Buy Golden Kitty before the deadline | Offer to play again |
+| Lose | 1–6 | Run out of time | Offer to play again |
 
-The temporary win and lose frames use the original character description: dark brown bob, lavender hoodie, blue jeans, and white sneakers. Small drawing differences between generated frames are expected in this temporary set.
+Win frame 9 uses the numbered file with its pixel effect. `win_cutscene_9 (No Pixels).png` is alternate artwork, recorded under `alternates` in the manifest and shown separately in the preview. It is not an extra story frame.
 
-[manifest.json](manifest.json) records exact sizes, transparency, proposed placement, cursor hotspot, and explicit cutscene order for future game code.
+[manifest.json](manifest.json) records exact sizes, transparency, proposed placement, cursor hotspot, and the cutscene playback order. When adding frames, update its `frames` list and the preview. Run the tests from the project root with `uv run python -m unittest discover -s tests -v`; they check that every cutscene image is either in playback or explicitly listed as an alternate, and that numbered frames play in order.
 
-[GENERATION_PROMPTS.md](GENERATION_PROMPTS.md) records the original placeholder prompts and generation method. The placeholder artwork was made using the built-in image generation tool and resized to its final dimensions with macOS `sips`; the supplied opening drawings replace that sequence.
+[GENERATION_PROMPTS.md](GENERATION_PROMPTS.md) records the original placeholder prompts and generation method. The placeholder artwork was made using the built-in image generation tool and resized to its final dimensions with macOS `sips`; the supplied cutscene drawings replace those sequences.

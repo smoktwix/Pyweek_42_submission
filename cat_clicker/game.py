@@ -25,16 +25,28 @@ class Game:
         self.state = None
         self.mode = "opening"
         self.screen = CutsceneScreen(self.resources, self.mode)
+        self._sync_music()
 
     def start_round(self):
         self.state = GameState()
         self.state.paused = config.PAUSE_ON_FOCUS_LOSS and not self.focused
         self.mode = "playing"
         self.screen = GameplayScreen(self.resources, self.state)
+        self._sync_music()
 
     def _show_outcome(self):
         self.mode = self.state.outcome
         self.screen = CutsceneScreen(self.resources, self.mode)
+        self._sync_music()
+
+    def _sync_music(self):
+        if not self.running:
+            self.resources.set_music(None)
+            return
+        playing = self.mode == "playing"
+        path = config.GAMEPLAY_MUSIC_PATH if playing else config.CUTSCENE_MUSIC_PATH
+        paused = not self.focused or (playing and self.state.paused)
+        self.resources.set_music(path, paused=paused)
 
     @property
     def viewport(self):
@@ -64,6 +76,7 @@ class Game:
             elif event.type == pygame.WINDOWFOCUSGAINED:
                 self.focused = True
         if not self.running:
+            self._sync_music()
             return
         if self.mode == "playing":
             self.state.advance(seconds)
@@ -90,6 +103,7 @@ class Game:
             if action:
                 # Do not let queued clicks spill into a new frame/screen/round.
                 break
+        self._sync_music()
 
     def draw(self, mouse_pos=None):
         self.window = pygame.display.get_surface()

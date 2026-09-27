@@ -29,7 +29,7 @@ Opening Cutscene
 Win Cutscene
 Game Over Cutscene
 
-The title of the game is "Cat Clicker" (temporary, we may change the name later). When the game begins, a series of opening cutscenes are shown (open_cutscene_1.jpg, open_cutscene_2.jpg,..) The clicks to next one (may choose to go to a previous one).
+The title of the game is "Cat Clicker Simulator". When the game begins, a series of opening cutscenes are shown (open_cutscene_1.jpg, open_cutscene_2.jpg,..) The clicks to next one (may choose to go to a previous one).
 
 If the player wins, they are shown win cutscenes (win_cutscene_1.jpg, win_cutscene_2.jpg, ...).The clicks to next one (may choose to go to a previous one).
 
@@ -49,6 +49,9 @@ Custom Mouse - we would like the "mouse" on the screen represented by a picture 
 background image
 
 Sound and Music for the game:
+- `assets/audio/music/Curious_Cat_Quest_1.mp3` loops during all cutscenes.
+- `assets/audio/music/Curious_Cat_Quest_2.mp3` loops during gameplay.
+- Music pauses with the game or when the window loses focus. Its volume and mute setting are separate from the meow effect.
 
 Concept Art:
 See some concept art in concept_art/. There are two images. In Concept.png, nothing has been bought yet.  In Concept_Bought.png, some objects have been bought. (Cat Petter and Litter Box)
@@ -58,5 +61,5 @@ Implementation details:
 - Yarn Ball upgrades double all Cat Petters' output per purchase. Neither boost affects manual clicks or Cat House.
 - The four-minute timer starts after the opening cutscenes. Pausing or switching away from the window freezes both time and automatic income. Returning to the window requires an explicit resume.
 - Golden Kitty must actually be purchased before the deadline; merely reaching 50500 points does not win.
-- Cutscenes are PNG files, with 14 opening frames and three frames each for win and lose, as listed in assets/manifest.json. The previous placeholder captions have been removed.
+- Cutscenes use 24 opening frames, 22 win frames, and 6 lose frames in numeric order, as listed in assets/manifest.json. The full artwork fits above the controls, and the previous placeholder captions have been removed. The clean version of win frame 9 is kept as alternate artwork.
 - All tunable game settings live in cat_clicker/config.py.

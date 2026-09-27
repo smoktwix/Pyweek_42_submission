@@ -1,8 +1,10 @@
 """Exercise the actual Pygame event, asset-loading, and rendering paths."""
 
+import json
 import os
+import re
 import unittest
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
@@ -46,7 +48,7 @@ class GameTests(unittest.TestCase):
         self.assertEqual(self.game.screen.index, 1)
         self.game.step(0, [key(pygame.K_LEFT)])
         self.assertEqual(self.game.screen.index, 0)
-        for index in range(1, 14):
+        for index in range(1, len(self.game.screen.frames)):
             self.game.step(0, [key(pygame.K_SPACE)])
             self.assertEqual(self.game.mode, "opening")
             self.assertEqual(self.game.screen.index, index)
@@ -98,6 +100,7 @@ class GameTests(unittest.TestCase):
         self.assertEqual(sound.get_num_channels(), 1)
         self.game.step(0, [click((400, 380)) for _ in range(config.SFX_CHANNELS * 2)])
         self.assertEqual(sound.get_num_channels(), config.SFX_CHANNELS)
+        self.assertTrue(pygame.mixer.music.get_busy())
         sound.stop()
         self.game.state.points = 100
         self.game.step(0, [click((130, 110)), click((20, 200)), click((400, 380), button=3),
@@ -123,13 +126,98 @@ class GameTests(unittest.TestCase):
 
     def test_sound_can_be_disabled(self):
         self.game.close()
-        with patch.object(config, "SFX_ENABLED", False):
+        with patch.object(config, "SFX_ENABLED", False), patch.object(config, "MUSIC_ENABLED", False):
             self.game = Game()
         self.assertIsNone(pygame.mixer.get_init())
         self.assertIsNone(self.game.resources.cat_meow)
         self.start()
         self.game.step(0, [click((400, 380))])
         self.assertEqual(self.game.state.points, 1)
+
+    def test_music_switches_between_cutscenes_gameplay_and_replay(self):
+        self.game.close()
+        with patch("pygame.mixer.music.load", wraps=pygame.mixer.music.load) as load, \
+                patch("pygame.mixer.music.play", wraps=pygame.mixer.music.play) as play:
+            self.game = Game()
+            self.assertTrue(pygame.mixer.music.get_busy())
+            self.assertAlmostEqual(pygame.mixer.music.get_volume(), config.MUSIC_VOLUME, delta=1 / 128)
+            self.game.step(0, [key(pygame.K_RIGHT)])
+            self.game.step(0, [key(pygame.K_LEFT)])
+            self.start()
+            for outcome in ("win", "lose"):
+                if outcome == "win":
+                    self.game.state.points = 50500
+                    self.game.step(0, [key(pygame.K_5)])
+                else:
+                    self.game.step(config.GAME_DURATION, [])
+                self.assertEqual(self.game.mode, outcome)
+                self.assertTrue(pygame.mixer.music.get_busy())
+                self.game.step(0, [key(pygame.K_RIGHT)])
+                self.game.screen.index = len(self.game.screen.frames) - 1
+                self.game.step(0, [key(pygame.K_RETURN)])
+                self.assertEqual(self.game.mode, "playing")
+                self.assertTrue(pygame.mixer.music.get_busy())
+            self.assertEqual(load.call_args_list,
+                             [call(str(config.CUTSCENE_MUSIC_PATH)),
+                              call(str(config.GAMEPLAY_MUSIC_PATH))] * 3)
+            self.assertEqual(play.call_args_list, [call(-1)] * 6)
+            self.game.step(0, [pygame.event.Event(pygame.QUIT)])
+            self.assertFalse(pygame.mixer.music.get_busy())
+
+    def test_music_pauses_with_game_and_focus_without_restarting(self):
+        with patch("pygame.mixer.music.play", wraps=pygame.mixer.music.play) as play:
+            self.game.step(0, [pygame.event.Event(pygame.WINDOWFOCUSLOST)])
+            self.assertFalse(pygame.mixer.music.get_busy())
+            self.game.step(0, [pygame.event.Event(pygame.WINDOWFOCUSGAINED)])
+            self.assertTrue(pygame.mixer.music.get_busy())
+            play.assert_not_called()
+            self.start()
+            self.game.step(0, [key(pygame.K_p)])
+            self.assertFalse(pygame.mixer.music.get_busy())
+            self.game.step(10, [])
+            self.assertFalse(pygame.mixer.music.get_busy())
+            self.game.step(0, [key(pygame.K_p)])
+            self.assertTrue(pygame.mixer.music.get_busy())
+            self.game.step(0, [pygame.event.Event(pygame.WINDOWMINIMIZED)])
+            self.assertFalse(pygame.mixer.music.get_busy())
+            self.game.step(0, [pygame.event.Event(pygame.WINDOWFOCUSGAINED)])
+            self.assertFalse(pygame.mixer.music.get_busy())
+            self.game.step(0, [key(pygame.K_p)])
+            self.assertTrue(pygame.mixer.music.get_busy())
+            self.game.step(0, [key(pygame.K_p)])
+            self.game.step(0, [click(self.game.screen.menu["restart"].rect.center)])
+            self.assertTrue(pygame.mixer.music.get_busy())
+            play.assert_called_once_with(-1)
+
+    def test_music_and_meows_can_be_disabled_independently(self):
+        for music_enabled, sfx_enabled in ((True, False), (False, True)):
+            with self.subTest(music=music_enabled, sfx=sfx_enabled):
+                self.game.close()
+                with patch.object(config, "MUSIC_ENABLED", music_enabled), \
+                        patch.object(config, "SFX_ENABLED", sfx_enabled):
+                    self.game = Game()
+                    self.assertEqual(pygame.mixer.music.get_busy(), music_enabled)
+                    self.assertEqual(self.game.resources.cat_meow is not None, sfx_enabled)
+                    self.start()
+                    self.game.step(0, [click((400, 380))])
+                    self.assertEqual(self.game.state.points, 1)
+                    self.assertEqual(pygame.mixer.music.get_busy(), music_enabled)
+
+    def test_missing_music_keeps_game_and_other_audio_working(self):
+        self.game.close()
+        with patch.object(config, "CUTSCENE_MUSIC_PATH", config.ASSET_DIR / "missing-test-track.mp3"):
+            with self.assertLogs("cat_clicker.resources", level="WARNING") as logs:
+                self.game = Game()
+                self.assertFalse(pygame.mixer.music.get_busy())
+                self.game.step(0, [key(pygame.K_RIGHT)])
+                self.start()
+                self.assertTrue(pygame.mixer.music.get_busy())
+                self.game.step(0, [click((400, 380))])
+                self.assertGreater(self.game.resources.cat_meow.get_num_channels(), 0)
+                self.game.step(config.GAME_DURATION, [])
+                self.assertEqual(self.game.mode, "lose")
+                self.assertFalse(pygame.mixer.music.get_busy())
+            self.assertEqual(len(logs.output), 1)
 
     def test_pause_blocks_shop_and_cat_input_then_resumes(self):
         self.start()
@@ -199,8 +287,11 @@ class GameTests(unittest.TestCase):
                 self.game.step(0, [key(pygame.K_RIGHT)])
                 self.game.step(0, [key(pygame.K_LEFT)])
                 self.assertEqual(self.game.screen.index, 0)
-                for _ in range(3):
+                for index in range(1, len(self.game.screen.frames)):
                     self.game.step(0, [key(pygame.K_RETURN)])
+                    self.assertEqual(self.game.mode, outcome)
+                    self.assertEqual(self.game.screen.index, index)
+                self.game.step(0, [key(pygame.K_RETURN)])
                 self.assertEqual(self.game.mode, "playing")
                 self.assertEqual((self.game.state.points, self.game.state.remaining), (0, 240))
 
@@ -226,7 +317,7 @@ class GameTests(unittest.TestCase):
         self.assertEqual(len(self.game.resources.images),
                          7 + len(self.game.resources.cat_petter_variants))
         self.assertEqual({name: len(frames) for name, frames in self.game.resources.cutscenes.items()},
-                         {"opening": 14, "win": 3, "lose": 3})
+                         {"opening": 24, "win": 22, "lose": 6})
         for sequence, frames in self.game.resources.cutscenes.items():
             screen = CutsceneScreen(self.game.resources, sequence)
             for index in range(len(frames)):
@@ -236,6 +327,48 @@ class GameTests(unittest.TestCase):
                     self.assertEqual(self.game.canvas.get_size(), (1200, 800))
         for name in config.PROP_AREAS:
             self.assertTrue(self.game.resources.image(name).get_flags() & pygame.SRCALPHA)
+
+    def test_cutscene_manifest_covers_all_files_in_numeric_order(self):
+        manifest = json.loads(config.ASSET_MANIFEST.read_text())
+        accounted_for = []
+        for sequence, spec in manifest["cutscenes"].items():
+            with self.subTest(sequence=sequence):
+                prefix = "open" if sequence == "opening" else sequence
+                numbered = []
+                for path in (config.ASSET_DIR / "cutscenes" / sequence).iterdir():
+                    match = re.fullmatch(rf"{prefix}_cutscene_(\d+)\.png", path.name)
+                    if match:
+                        numbered.append((int(match[1]), path.relative_to(config.ASSET_DIR).as_posix()))
+                self.assertEqual(spec["frames"], [path for _, path in sorted(numbered)])
+                accounted_for.extend(spec["frames"])
+                for original, alternate in spec.get("alternates", {}).items():
+                    self.assertIn(original, spec["frames"])
+                    self.assertTrue((config.ASSET_DIR / alternate).is_file())
+                    accounted_for.append(alternate)
+        actual = [path.relative_to(config.ASSET_DIR).as_posix()
+                  for path in (config.ASSET_DIR / "cutscenes").rglob("*")
+                  if path.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp")]
+        self.assertCountEqual(accounted_for, actual)
+
+    def test_cutscene_art_edges_remain_visible_above_controls(self):
+        frame = pygame.Surface((1200, 800))
+        frame.fill((50, 60, 70))
+        markers = [((0, 0, 20, 20), (255, 0, 0), (68, 1)),
+                   ((1180, 0, 20, 20), (0, 255, 0), (1130, 1)),
+                   ((0, 780, 20, 20), (0, 0, 255), (68, 708)),
+                   ((1180, 780, 20, 20), (255, 255, 0), (1130, 708))]
+        for rect, color, _ in markers:
+            pygame.draw.rect(frame, color, rect)
+        self.game.screen.frames = [frame]
+        self.game.screen.draw(self.game.canvas, None)
+        for _, color, pos in markers:
+            # Smooth scaling can round color channels down by a few levels.
+            for actual, expected in zip(self.game.canvas.get_at(pos)[:3], color):
+                self.assertAlmostEqual(actual, expected, delta=4)
+        self.assertEqual(self.game.canvas.get_at((0, 350))[:3], config.COLORS["letterbox"])
+        for button in (self.game.screen.back_button, self.game.screen.next_button,
+                       self.game.screen.skip_button, self.game.screen.quit_button):
+            self.assertGreaterEqual(button.rect.top, 710)
 
     def test_gameplay_all_upgrades_and_pause_render(self):
         self.start()
